@@ -8,8 +8,8 @@ import gg.ninjagaming.lobbyswitcher.listener.InventoryClickListener;
 import gg.ninjagaming.lobbyswitcher.listener.PlayerInteractListener;
 import gg.ninjagaming.lobbyswitcher.listener.PlayerJoinListener;
 import gg.ninjagaming.lobbyswitcher.misc.ItemBuilder;
+import gg.ninjagaming.lobbyswitcher.misc.Updater;
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo;
-import de.cyne.lobbyswitcher.updater.Updater;
 import gg.ninjagaming.lobbyswitcher.ping.ServerPing;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -73,17 +73,19 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
         Bukkit.getScheduler().runTaskTimerAsynchronously(LobbySwitcher.getInstance(), () -> {
             if (!LobbySwitcher.reloading) {
                 for (ServerInfo servers : LobbySwitcher.servers.values()) {
+
                     ServerPing ping = servers.getServerPing();
                     ServerPing.DefaultResponse response;
-                    try {
-                        response = ping.fetchData();
-                        servers.setOnline(true);
-                        servers.setMOTD(response.getDescription());
-                        servers.setPlayerCount(response.getPlayers());
-                        servers.setMaxPlayers(response.getMaxPlayers());
-                    } catch (IOException ex) {
-                        servers.setOnline(false);
-                    }
+
+                    if (ping == null)
+                        continue;
+
+                    response = ping.fetchData();
+
+                    servers.setOnline(response.getVersion() != null);
+                    servers.setMOTD(response.getDescription());
+                    servers.setPlayerCount(response.getPlayers());
+                    servers.setMaxPlayers(response.getMaxPlayers());
                 }
 
                 for (Player players : Bukkit.getOnlinePlayers()) {
