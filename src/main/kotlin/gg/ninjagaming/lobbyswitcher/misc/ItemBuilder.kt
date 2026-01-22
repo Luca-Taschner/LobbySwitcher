@@ -28,7 +28,7 @@ class ItemBuilder @JvmOverloads constructor(material: Material, amount: Int = 1)
     }
 
     fun setLore(lore: MutableList<String>): ItemBuilder {
-        for (i in lore.indices) lore[i] = ChatColor.translateAlternateColorCodes('&', lore[i]!!)
+        for (i in lore.indices) lore[i] = ChatColor.translateAlternateColorCodes('&', lore[i])
         this.meta?.lore = lore
         return this.build()
     }
