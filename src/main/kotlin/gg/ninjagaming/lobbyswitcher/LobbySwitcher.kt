@@ -27,7 +27,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
 
         saveDefaultConfig()
         try {
-            cfg.load(Companion.file)
+            cfg.load(file)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: InvalidConfigurationException) {
@@ -98,7 +98,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
                 if (string == null)
                     return false
                 string.toInt()
-            } catch (ex: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 return false
             }
             return true
