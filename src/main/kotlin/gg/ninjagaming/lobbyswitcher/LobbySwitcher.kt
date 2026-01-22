@@ -80,7 +80,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
         var file: File = File("plugins/LobbySwitcher", "config.yml")
         var cfg: FileConfiguration = YamlConfiguration.loadConfiguration(file)
 
-        var servers: HashMap<String?, ServerInfo> = HashMap<String?, ServerInfo>()
+        var servers: HashMap<String?, ServerInfo> = HashMap()
         var currentServer: String? = null
 
         var updateAvailable: Boolean = false
