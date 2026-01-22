@@ -2,6 +2,7 @@ name: LobbySwitcher
 version: 1.0.2
 author: cyne
 main: gg.ninjagaming.lobbyswitcher.LobbySwitcher
+api-version: 1.21
 
 commands:
   lobbyswitcher:
