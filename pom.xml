@@ -6,7 +6,7 @@
 
     <groupId>gg.ninjagaming</groupId>
     <artifactId>lobbyswitcher</artifactId>
-    <version>1.0</version>
+    <version>1.0.2</version>
 
     <properties>
         <kotlin.version>2.3.0</kotlin.version>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.1-R0.1-SNAPSHOT</version>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -104,8 +104,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>14</source>
+                    <target>14</target>
                 </configuration>
             </plugin>
         </plugins>
