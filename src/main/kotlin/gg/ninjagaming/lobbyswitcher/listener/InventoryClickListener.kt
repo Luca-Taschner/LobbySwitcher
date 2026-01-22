@@ -1,6 +1,6 @@
 package gg.ninjagaming.lobbyswitcher.listener
 
-import de.cyne.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -47,7 +47,7 @@ class InventoryClickListener : Listener {
                 LobbySwitcher.getString("messages.prefix") + LobbySwitcher.getString("messages.server_connect")
                     .replace("%server%", servers.displayName!!))
 
-            LobbySwitcher.getInstance().sendToServer(p, servers.serverName)
+            LobbySwitcher.sendToServer(p, servers.serverName)
 
 
         }
