@@ -1,6 +1,7 @@
 package gg.ninjagaming.lobbyswitcher.commands
 
-import de.cyne.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.misc.GuiHelper
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -26,7 +27,7 @@ class LobbySwitcherCommand : CommandExecutor {
                         sender.sendMessage("§cThis command is available for players only.")
                         return true
                     }
-                    LobbySwitcher.getInstance().openGUI(sender)
+                    GuiHelper.openGui(sender)
                     return true
                 }
 
@@ -66,7 +67,7 @@ class LobbySwitcherCommand : CommandExecutor {
                     }
 
                     if (sender is Player) {
-                        if (LobbySwitcher.currentServer == null) LobbySwitcher.getInstance().getServer(sender)
+                        if (LobbySwitcher.currentServer == null) LobbySwitcher.getServer(sender)
                         //sender.sendMessage("ServerInfo: §e" + LobbySwitcher.currentServer);
                     }
 
@@ -131,7 +132,7 @@ class LobbySwitcherCommand : CommandExecutor {
         }
         sender.sendMessage("")
         sender.sendMessage(
-            ("§8┃ §b● §8┃ §bLobbySwitcher §8× §av" + LobbySwitcher.getInstance().description.version + " §7by cyne"))
+            ("§8┃ §b● §8┃ §bLobbySwitcher §8× §av" + LobbySwitcher.VERSION + " §7by cyne"))
         sender.sendMessage("§8┃ §b● §8┃ ")
         sender.sendMessage("§8┃ §b● §8┃ §8/§flobbyswitcher gui §8- §7Open the LobbySwitcher-Inventory")
         sender.sendMessage("§8┃ §b● §8┃ §8/§flobbyswitcher reload §8- §7Reload the configuration files")
