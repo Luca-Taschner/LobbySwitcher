@@ -25,6 +25,8 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
     override fun onEnable() {
         instance = this
 
+        VERSION = this.description.version
+
         saveDefaultConfig()
         try {
 
@@ -88,7 +90,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
 
         var reloading: Boolean = false
 
-        const val VERSION: String = "1.0.2"
+        lateinit var  VERSION: String
 
         var updater: Updater? = null
         var instance: LobbySwitcher? = null
