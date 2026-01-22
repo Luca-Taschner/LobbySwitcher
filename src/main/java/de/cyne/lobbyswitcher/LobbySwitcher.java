@@ -7,7 +7,7 @@ import de.cyne.lobbyswitcher.commands.LobbySwitcherCommand;
 import de.cyne.lobbyswitcher.listener.InventoryClickListener;
 import de.cyne.lobbyswitcher.listener.PlayerInteractListener;
 import de.cyne.lobbyswitcher.listener.PlayerJoinListener;
-import de.cyne.lobbyswitcher.misc.ItemBuilder;
+import gg.ninjagaming.lobbyswitcher.misc.ItemBuilder;
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo;
 import de.cyne.lobbyswitcher.updater.Updater;
 import gg.ninjagaming.lobbyswitcher.ping.ServerPing;
@@ -104,8 +104,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                                         .replace("%motd%", servers.getMOTD())));
                                     }
                                     ItemBuilder current = new ItemBuilder(
-                                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.current.material")),
-                                            1, (byte) LobbySwitcher.cfg.getInt("layouts.current.subid"))
+                                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.current.material")), (byte) LobbySwitcher.cfg.getInt("layouts.current.subid"))
                                             .setDisplayName(
                                                     ChatColor.translateAlternateColorCodes('&', displayName))
                                             .setLore(lore);
@@ -124,7 +123,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                                         .replace("%motd%", servers.getMOTD())));
                                     }
                                     ItemBuilder online = new ItemBuilder(
-                                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")), 1,
+                                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")),
                                             (byte) LobbySwitcher.cfg.getInt("layouts.online.subid"))
                                             .setDisplayName(
                                                     ChatColor.translateAlternateColorCodes('&', displayName))
@@ -137,7 +136,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                 String displayName = LobbySwitcher.cfg.getString("layouts.offline.displayname")
                                         .replace("%server%", servers.getDisplayName());
                                 ItemBuilder offline = new ItemBuilder(
-                                        Material.getMaterial(LobbySwitcher.cfg.getString("layouts.offline.material")), 1,
+                                        Material.getMaterial(LobbySwitcher.cfg.getString("layouts.offline.material")),
                                         (byte) LobbySwitcher.cfg.getInt("layouts.offline.subid"))
                                         .setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName))
                                         .setLore(LobbySwitcher.cfg.getStringList("layouts.offline.lore"));
@@ -203,8 +202,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                         .replace("%motd%", servers.getMOTD())));
                     }
                     ItemBuilder current = new ItemBuilder(
-                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.current.material")),
-                            1, (byte) LobbySwitcher.cfg.getInt("layouts.current.subid"))
+                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.current.material")), (byte) LobbySwitcher.cfg.getInt("layouts.current.subid"))
                             .setDisplayName(displayName).setLore(lore);
                     if (LobbySwitcher.cfg.getBoolean("layouts.current.glow"))
                         current.addGlowEffect();
@@ -223,7 +221,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                         .replace("%motd%", servers.getMOTD())));
                     }
                     ItemBuilder online = new ItemBuilder(
-                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")), 1,
+                            Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")),
                             (byte) LobbySwitcher.cfg.getInt("layouts.online.subid"))
                             .setDisplayName(displayName).setLore(lore);
                     if (LobbySwitcher.cfg.getBoolean("layouts.online.glow"))
@@ -236,7 +234,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                 String displayName = LobbySwitcher.getString("layouts.offline.displayname")
                         .replace("%server%", servers.getDisplayName());
                 ItemBuilder offline = new ItemBuilder(
-                        Material.getMaterial(LobbySwitcher.cfg.getString("layouts.offline.material")), 1,
+                        Material.getMaterial(LobbySwitcher.cfg.getString("layouts.offline.material")),
                         (byte) LobbySwitcher.cfg.getInt("layouts.offline.subid"))
                         .setDisplayName(displayName)
                         .setLore(LobbySwitcher.cfg.getStringList("layouts.offline.lore"));

@@ -1,7 +1,7 @@
 package de.cyne.lobbyswitcher.listener;
 
 import de.cyne.lobbyswitcher.LobbySwitcher;
-import de.cyne.lobbyswitcher.misc.ItemBuilder;
+import gg.ninjagaming.lobbyswitcher.misc.ItemBuilder;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -19,7 +19,7 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
 
-        ItemBuilder item = new ItemBuilder(Material.getMaterial(LobbySwitcher.cfg.getString("hotbarItem.material")), 1,
+        ItemBuilder item = new ItemBuilder(Material.getMaterial(LobbySwitcher.cfg.getString("hotbarItem.material")),
                 (short) LobbySwitcher.cfg.getInt("hotbarItem.subid"))
                 .setDisplayName(ChatColor.translateAlternateColorCodes('&',
                         LobbySwitcher.cfg.getString("hotbarItem.displayname")))
