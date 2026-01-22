@@ -1,6 +1,7 @@
 package gg.ninjagaming.lobbyswitcher.listener
 
-import de.cyne.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.misc.GuiHelper
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -24,7 +25,8 @@ class PlayerInteractListener : Listener {
             return
 
         e.isCancelled = true
-        LobbySwitcher.getInstance().openGUI(p)
+
+        GuiHelper.openGui(p)
         return
     }
 }
