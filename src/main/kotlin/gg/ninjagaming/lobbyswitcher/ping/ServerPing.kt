@@ -3,7 +3,7 @@ package gg.ninjagaming.lobbyswitcher.ping
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException
+import com.google.gson.JsonParseException
 import java.io.*
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -19,7 +19,6 @@ class ServerPing {
     }
 
     @Suppress("unused")
-    @Throws(IOException::class)
     fun fetchData(): DefaultResponse {
         var socket: Socket? = null
         var outputStream: OutputStream? = null
@@ -74,15 +73,31 @@ class ServerPing {
             dataIn.readFully(responseData)
             val jsonString = String(responseData, Charset.forName("utf-8"))
 
-            var jsonObject = JsonObject()
             val parser = JsonParser()
-            try {
-                jsonObject = parser.parse(jsonString) as JsonObject
-            } catch (ex: ParseException) {
-                Logger.getLogger(ServerPing::class.java.getName()).log(Level.SEVERE, null, ex)
+            val jsonObject: JsonObject = try {
+                val element = parser.parse(jsonString)
+                if (!element.isJsonObject) {
+                    Logger.getLogger(ServerPing::class.java.getName())
+                        .log(Level.SEVERE, "JSON response is not an object: {0}", element.toString())
+                    return DefaultResponse()
+                }
+                element.asJsonObject
+            } catch (ex: JsonParseException) {
+                Logger.getLogger(ServerPing::class.java.getName()).log(Level.SEVERE, "Invalid JSON response", ex)
+                return DefaultResponse()
             }
-            val jsonVersion = jsonObject.get("version") as JsonObject
-            val version = jsonVersion.get("name").asString
+
+            val versionElement = jsonObject.get("version") ?: return DefaultResponse()
+            if (!versionElement.isJsonObject) return DefaultResponse()
+            val jsonVersion = versionElement.asJsonObject
+
+            val nameElement = jsonVersion.get("name") ?: return DefaultResponse()
+            val version = try {
+                nameElement.asString
+            } catch (_: Exception) {
+                return DefaultResponse()
+            }
+
             val response: DefaultResponse = DefaultResponse()
 
             populateResponseData(version, response, jsonString)
