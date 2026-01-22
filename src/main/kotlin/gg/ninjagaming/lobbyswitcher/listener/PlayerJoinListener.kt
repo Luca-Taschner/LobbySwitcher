@@ -1,6 +1,6 @@
 package gg.ninjagaming.lobbyswitcher.listener
 
-import de.cyne.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import gg.ninjagaming.lobbyswitcher.misc.ItemBuilder
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
@@ -18,9 +18,9 @@ class PlayerJoinListener : Listener {
         val p = e.getPlayer()
 
         val hotBarItemMaterialString = LobbySwitcher.cfg.getString("hotbarItem.material")
-        val horBarItemDisplayName = LobbySwitcher.cfg.getString("hotbarItem.displayname")
+        val hotBarItemDisplayName = LobbySwitcher.cfg.getString("hotbarItem.displayname")
 
-        if (hotBarItemMaterialString == null || horBarItemDisplayName == null)
+        if (hotBarItemMaterialString == null || hotBarItemDisplayName == null)
             return
 
         val hotBarItemMaterial = Material.getMaterial(hotBarItemMaterialString) ?:
@@ -30,12 +30,12 @@ class PlayerJoinListener : Listener {
             hotBarItemMaterial,
             LobbySwitcher.cfg.getInt("hotbarItem.subid").toShort().toInt())
             .setDisplayName(
-                ChatColor.translateAlternateColorCodes('&', horBarItemDisplayName))
+                ChatColor.translateAlternateColorCodes('&', hotBarItemDisplayName))
             .setLore(LobbySwitcher.cfg.getStringList("hotbarItem.lore"))
 
         p.inventory.setItem(LobbySwitcher.cfg.getInt("hotbarItem.slot"), item)
 
-        if (LobbySwitcher.currentServer == null) LobbySwitcher.getInstance().getServer(p)
+        if (LobbySwitcher.currentServer == null) LobbySwitcher.getServer(p)
 
         if (LobbySwitcher.updateAvailable && p.hasPermission("lobbyswitcher.admin")) {
             val message = TextComponent("§8┃ §bLobbySwitcher §8┃ §7Download now §8▶ ")
