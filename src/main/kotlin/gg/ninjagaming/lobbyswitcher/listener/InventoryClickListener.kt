@@ -1,0 +1,55 @@
+package gg.ninjagaming.lobbyswitcher.listener
+
+import de.cyne.lobbyswitcher.LobbySwitcher
+import org.bukkit.ChatColor
+import org.bukkit.Material
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+
+class InventoryClickListener : Listener {
+    @EventHandler
+    fun onInventoryClick(e: InventoryClickEvent) {
+        val p = e.whoClicked as Player
+        if (e.currentItem == null) return
+
+        if (e.view.title != ChatColor.translateAlternateColorCodes('&', LobbySwitcher.cfg.getString("inventory.title")!!))
+            return
+
+        e.isCancelled = true
+
+        if (e.currentItem!!.type != Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")!!))
+            return
+
+        for (servers in LobbySwitcher.servers.values) {
+            if (e.slot != servers.slot)
+                continue
+
+            if (!servers.isOnline) {
+                p.closeInventory()
+                p.sendMessage(
+                    LobbySwitcher.getString("messages.prefix") + LobbySwitcher.getString("messages.server_offline").replace("%server%", servers.displayName!!))
+                continue
+            }
+
+
+            if (servers.serverName == LobbySwitcher.currentServer) {
+                p.closeInventory()
+                p.sendMessage(
+                    LobbySwitcher.getString("messages.prefix") + LobbySwitcher.getString("messages.server_already_connected")
+                        .replace("%server%", servers.displayName!!))
+                continue
+            }
+
+            p.closeInventory()
+            p.sendMessage(
+                LobbySwitcher.getString("messages.prefix") + LobbySwitcher.getString("messages.server_connect")
+                    .replace("%server%", servers.displayName!!))
+
+            LobbySwitcher.getInstance().sendToServer(p, servers.serverName)
+
+
+        }
+    }
+}
