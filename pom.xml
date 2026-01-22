@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.cyne</groupId>
+    <groupId>gg.ninjagaming</groupId>
     <artifactId>lobbyswitcher</artifactId>
     <version>1.0</version>
 
@@ -60,7 +60,6 @@
                         </goals>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>src/main/java</sourceDir>
                                 <sourceDir>src/main/kotlin</sourceDir>
                             </sourceDirs>
                         </configuration>
