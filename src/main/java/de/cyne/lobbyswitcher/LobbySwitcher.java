@@ -8,9 +8,9 @@ import de.cyne.lobbyswitcher.listener.InventoryClickListener;
 import de.cyne.lobbyswitcher.listener.PlayerInteractListener;
 import de.cyne.lobbyswitcher.listener.PlayerJoinListener;
 import de.cyne.lobbyswitcher.misc.ItemBuilder;
-import de.cyne.lobbyswitcher.ping.ServerPing;
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo;
 import de.cyne.lobbyswitcher.updater.Updater;
+import gg.ninjagaming.lobbyswitcher.ping.ServerPing;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -78,7 +78,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                     try {
                         response = ping.fetchData();
                         servers.setOnline(true);
-                        servers.setMOTD(response.description);
+                        servers.setMOTD(response.getDescription());
                         servers.setPlayerCount(response.getPlayers());
                         servers.setMaxPlayers(response.getMaxPlayers());
                     } catch (IOException ex) {

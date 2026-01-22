@@ -1,6 +1,5 @@
 package gg.ninjagaming.lobbyswitcher.ping
 
-import de.cyne.lobbyswitcher.ping.ServerPing
 import java.net.InetSocketAddress
 
 class ServerInfo(var serverName: String?, var host: String, var port: Int, var displayName: String?, var slot: Int) {

@@ -15,7 +15,7 @@ inventory:
   rows: 3
   title: '&8● &fLobbys'
 
-# To add a new lobby-server use the ingame command or the following template:
+# To add a new lobby-server, use the ingame command or the following template:
 #
 # example-server:                     # Name of the server in the bungeecord config.yml
 #   host: 127.0.0.1                   # IP-Address of the server
