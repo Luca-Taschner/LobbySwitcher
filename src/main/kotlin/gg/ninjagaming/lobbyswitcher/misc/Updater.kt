@@ -1,6 +1,6 @@
 package gg.ninjagaming.lobbyswitcher.misc
 
-import de.cyne.lobbyswitcher.LobbySwitcher
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -9,7 +9,7 @@ import java.net.URL
 
 class Updater(private val resourceId: Long) {
     private var latestVersion: String? = null
-    val currentVersion: String = LobbySwitcher.getInstance().description.version
+    val currentVersion: String = LobbySwitcher.VERSION
     private var updateResult: UpdateResult? = null
 
     enum class UpdateResult {
@@ -39,28 +39,28 @@ class Updater(private val resourceId: Long) {
     }
 
     fun run() {
-        LobbySwitcher.getInstance().getLogger().info("Searching for an update on 'spigotmc.org'..")
+        LobbySwitcher.getLogger().info("Searching for an update on 'spigotmc.org'..")
         checkLatestVersion()
         compareVersions()
         when (this.updateResult) {
             UpdateResult.UPDATE_AVAILABLE -> {
-                LobbySwitcher.getInstance().getLogger()
+                LobbySwitcher.getLogger()
                     .info("There was a new version found. It is recommended to update. (Visit spigotmc.org)")
                 LobbySwitcher.updateAvailable = true
             }
 
             UpdateResult.NO_UPDATE -> {
-                LobbySwitcher.getInstance().getLogger().info("The plugin is up to date.")
+                LobbySwitcher.getLogger().info("The plugin is up to date.")
                 LobbySwitcher.updateAvailable = false
             }
 
             UpdateResult.CONNECTION_ERROR -> {
-                LobbySwitcher.getInstance().getLogger().warning("Could not connect to spigotmc.org. Retrying soon.")
+                LobbySwitcher.getLogger().warning("Could not connect to spigotmc.org. Retrying soon.")
                 LobbySwitcher.updateAvailable = false
             }
 
             else -> {
-                LobbySwitcher.getInstance().getLogger().warning("Could not connect to spigotmc.org. Retrying soon.")
+                LobbySwitcher.getLogger().warning("Could not connect to spigotmc.org. Retrying soon.")
                 LobbySwitcher.updateAvailable = false
             }
         }
