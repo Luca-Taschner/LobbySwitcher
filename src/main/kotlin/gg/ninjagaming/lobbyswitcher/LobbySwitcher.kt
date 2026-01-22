@@ -1,12 +1,12 @@
 package gg.ninjagaming.lobbyswitcher
 
 import com.google.common.io.ByteStreams
+import gg.ninjagaming.advancedlobby.misc.Updater
 import gg.ninjagaming.lobbyswitcher.commands.LobbySwitcherCommand
 import gg.ninjagaming.lobbyswitcher.listener.InventoryClickListener
 import gg.ninjagaming.lobbyswitcher.listener.PlayerInteractListener
 import gg.ninjagaming.lobbyswitcher.listener.PlayerJoinListener
 import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper.pluginMessageReceived
-import gg.ninjagaming.lobbyswitcher.misc.Updater
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo
 import gg.ninjagaming.lobbyswitcher.runnables.ServerRefreshRunnable
 import org.bukkit.Bukkit
@@ -38,7 +38,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
         this.registerCommands()
         this.registerListener()
 
-        updater = Updater(65769)
+        updater = Updater(VERSION)
         Bukkit.getScheduler()
             .scheduleSyncRepeatingTask(instance!!, { updater!!.run() }, 0L, (20 * 60 * 60 * 24).toLong())
 
@@ -57,7 +57,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
 
         Bukkit.getConsoleSender().sendMessage("     §b_    §3____")
         Bukkit.getConsoleSender().sendMessage(
-            "     §b|    §3[__    §b" + instance!!.getDescription().getName() + " §fv" + instance!!.getDescription().getVersion()
+            "     §b|    §3[__    §b" + instance!!.description.name + " §fv" + instance!!.description.version
         )
         Bukkit.getConsoleSender().sendMessage("     §b|___ §3___]   §7The plugin has been §aenabled§8.")
         Bukkit.getConsoleSender().sendMessage("")

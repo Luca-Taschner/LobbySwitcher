@@ -1,76 +1,97 @@
-package gg.ninjagaming.lobbyswitcher.misc
+package gg.ninjagaming.advancedlobby.misc
 
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher
-import java.io.BufferedReader
+import com.google.gson.JsonParser
 import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Duration
 
-class Updater(private val resourceId: Long) {
-    private var latestVersion: String? = null
-    val currentVersion: String = LobbySwitcher.VERSION
-    private var updateResult: UpdateResult? = null
+class Updater(private val currentVersion: String) {
 
     enum class UpdateResult {
-        UPDATE_AVAILABLE, NO_UPDATE, CONNECTION_ERROR
+        UPDATE_AVAILABLE, NO_UPDATE, CONNECTION_ERROR, CONNECTION_TIMEOUT
     }
 
-    fun checkLatestVersion() {
+    private fun checkLatestVersion(): UpdateResult {
         try {
-            val httpConnection = URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId)
-                .openConnection() as HttpURLConnection
-            this.latestVersion = BufferedReader(InputStreamReader(httpConnection.getInputStream())).readLine()
-        } catch (e: IOException) {
-            this.setUpdateResult(UpdateResult.CONNECTION_ERROR)
+            val client = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build()
+
+
+            val request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.github.com/repos/Luca-Taschner/LobbySwitcher/releases/latest"))
+                .header("Accept", "application/vnd.github.v3+json")
+                .timeout(Duration.ofSeconds(15))
+                .GET()
+                .build()
+
+            val responseFuture = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+
+
+            val response = responseFuture.join()
+
+            if (response.statusCode() != 200){
+                return UpdateResult.CONNECTION_ERROR
+            }
+
+            val body = response.body()
+
+            val jsonObject = JsonParser.parseString(body).asJsonObject
+            val latestTag = jsonObject.get("tag_name").asString
+
+            return compareVersions(latestTag)
+
+        } catch (_: IOException) {
+            return UpdateResult.CONNECTION_ERROR
+        }catch (_: InterruptedException) {
+            Thread.currentThread().interrupt()
+            return UpdateResult.CONNECTION_TIMEOUT
+        }catch (_: InterruptedException) {
+            Thread.currentThread().interrupt()
+            return UpdateResult.CONNECTION_TIMEOUT
         }
+
     }
 
-    fun compareVersions() {
+    private fun compareVersions(latestVersion: String): UpdateResult {
         val currentVersionCompact = currentVersion.replace(".", "").toLong()
-        val latestVersionCompact = latestVersion!!.replace(".", "").toLong()
+        val latestVersionCompact = latestVersion.replace(".", "").replace("v","").toLong()
 
-        if (currentVersionCompact == latestVersionCompact) {
-            this.setUpdateResult(UpdateResult.NO_UPDATE)
-            return
-        }
-        this.setUpdateResult(UpdateResult.UPDATE_AVAILABLE)
-        return
+        if (currentVersionCompact >= latestVersionCompact)
+            return UpdateResult.NO_UPDATE
+
+        return UpdateResult.UPDATE_AVAILABLE
     }
 
     fun run() {
-        LobbySwitcher.getLogger().info("Searching for an update on 'spigotmc.org'..")
-        checkLatestVersion()
-        compareVersions()
-        when (this.updateResult) {
+        LobbySwitcher.instance!!.logger.info("Searching for an update on 'Github API'..")
+
+        val updateResult = checkLatestVersion()
+
+        when (updateResult) {
             UpdateResult.UPDATE_AVAILABLE -> {
-                LobbySwitcher.getLogger()
-                    .info("There was a new version found. It is recommended to update. (Visit spigotmc.org)")
+                LobbySwitcher.instance!!.logger.info("There was a new version found. It is recommended to update. (Visit the Github Page for more Information)")
                 LobbySwitcher.updateAvailable = true
             }
 
             UpdateResult.NO_UPDATE -> {
-                LobbySwitcher.getLogger().info("The plugin is up to date.")
+                LobbySwitcher.instance!!.logger.info("The plugin is up to date.")
                 LobbySwitcher.updateAvailable = false
             }
 
             UpdateResult.CONNECTION_ERROR -> {
-                LobbySwitcher.getLogger().warning("Could not connect to spigotmc.org. Retrying soon.")
+                LobbySwitcher.instance!!.logger.warning("Could not connect to Github API. Retrying soon.")
                 LobbySwitcher.updateAvailable = false
             }
 
-            else -> {
-                LobbySwitcher.getLogger().warning("Could not connect to spigotmc.org. Retrying soon.")
+            UpdateResult.CONNECTION_TIMEOUT -> {
+                LobbySwitcher.instance!!.logger.warning("Request to Github API Timed out. Retrying soon.")
                 LobbySwitcher.updateAvailable = false
             }
         }
-    }
-
-    fun getLatestVersion(): String {
-        return this.latestVersion!!
-    }
-
-    fun setUpdateResult(updateResult: UpdateResult) {
-        this.updateResult = updateResult
     }
 }
