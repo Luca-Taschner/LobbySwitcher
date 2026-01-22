@@ -2,7 +2,7 @@ package gg.ninjagaming.lobbyswitcher.ping
 
 import java.net.InetSocketAddress
 
-class ServerInfo(var serverName: String?, var host: String, var port: Int, var displayName: String?, var slot: Int) {
+class ServerInfo(var serverName: String, var host: String, var port: Int, var displayName: String?, var slot: Int) {
     var serverPing: ServerPing?
 
     var isOnline: Boolean = false
