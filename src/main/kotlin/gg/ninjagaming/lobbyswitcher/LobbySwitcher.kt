@@ -45,11 +45,11 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord")
 
         for (server in cfg.getConfigurationSection("servers")!!.getKeys(false)) {
-            val host: String? = cfg.getString("servers." + server + ".host")
-            val port: Int = cfg.getInt("servers." + server + ".port")
-            val displayName: String? = cfg.getString("servers." + server + ".displayname")
-            val slot: Int = cfg.getInt("servers." + server + ".slot")
-            servers.put(server, ServerInfo(server, host!!, port, displayName, slot))
+            val host: String? = cfg.getString("servers.$server.host")
+            val port: Int = cfg.getInt("servers.$server.port")
+            val displayName: String? = cfg.getString("servers.$server.displayname")
+            val slot: Int = cfg.getInt("servers.$server.slot")
+            servers[server] = ServerInfo(server, host!!, port, displayName, slot)
         }
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(instance!!, ServerRefreshRunnable.getRunnable(), 20, 20)
