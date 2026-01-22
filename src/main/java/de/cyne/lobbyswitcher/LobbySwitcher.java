@@ -8,8 +8,8 @@ import de.cyne.lobbyswitcher.listener.InventoryClickListener;
 import de.cyne.lobbyswitcher.listener.PlayerInteractListener;
 import de.cyne.lobbyswitcher.listener.PlayerJoinListener;
 import de.cyne.lobbyswitcher.misc.ItemBuilder;
-import de.cyne.lobbyswitcher.ping.ServerInfo;
 import de.cyne.lobbyswitcher.ping.ServerPing;
+import gg.ninjagaming.lobbyswitcher.ping.ServerInfo;
 import de.cyne.lobbyswitcher.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -78,7 +78,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                     try {
                         response = ping.fetchData();
                         servers.setOnline(true);
-                        servers.setMotd(response.description);
+                        servers.setMOTD(response.description);
                         servers.setPlayerCount(response.getPlayers());
                         servers.setMaxPlayers(response.getMaxPlayers());
                     } catch (IOException ex) {
@@ -101,7 +101,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                         lore.add(ChatColor.translateAlternateColorCodes('&',
                                                 string.replace("%players%", String.valueOf(servers.getPlayerCount()))
                                                         .replace("%max_players%", String.valueOf(servers.getMaxPlayers()))
-                                                        .replace("%motd%", servers.getMotd())));
+                                                        .replace("%motd%", servers.getMOTD())));
                                     }
                                     ItemBuilder current = new ItemBuilder(
                                             Material.getMaterial(LobbySwitcher.cfg.getString("layouts.current.material")),
@@ -121,7 +121,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                                         lore.add(ChatColor.translateAlternateColorCodes('&',
                                                 string.replace("%players%", String.valueOf(servers.getPlayerCount()))
                                                         .replace("%max_players%", String.valueOf(servers.getMaxPlayers()))
-                                                        .replace("%motd%", servers.getMotd())));
+                                                        .replace("%motd%", servers.getMOTD())));
                                     }
                                     ItemBuilder online = new ItemBuilder(
                                             Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")), 1,
@@ -200,7 +200,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                         lore.add(ChatColor.translateAlternateColorCodes('&',
                                 string.replace("%players%", String.valueOf(servers.getPlayerCount()))
                                         .replace("%max_players%", String.valueOf(servers.getMaxPlayers()))
-                                        .replace("%motd%", servers.getMotd())));
+                                        .replace("%motd%", servers.getMOTD())));
                     }
                     ItemBuilder current = new ItemBuilder(
                             Material.getMaterial(LobbySwitcher.cfg.getString("layouts.current.material")),
@@ -220,7 +220,7 @@ public class LobbySwitcher extends JavaPlugin implements PluginMessageListener {
                         lore.add(ChatColor.translateAlternateColorCodes('&',
                                 string.replace("%players%", String.valueOf(servers.getPlayerCount()))
                                         .replace("%max_players%", String.valueOf(servers.getMaxPlayers()))
-                                        .replace("%motd%", servers.getMotd())));
+                                        .replace("%motd%", servers.getMOTD())));
                     }
                     ItemBuilder online = new ItemBuilder(
                             Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")), 1,

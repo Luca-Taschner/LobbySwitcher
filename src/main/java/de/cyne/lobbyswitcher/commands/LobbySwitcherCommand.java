@@ -1,7 +1,7 @@
 package de.cyne.lobbyswitcher.commands;
 
 import de.cyne.lobbyswitcher.LobbySwitcher;
-import de.cyne.lobbyswitcher.ping.ServerInfo;
+import gg.ninjagaming.lobbyswitcher.ping.ServerInfo;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

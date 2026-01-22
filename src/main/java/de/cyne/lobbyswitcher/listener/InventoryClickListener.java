@@ -1,7 +1,7 @@
 package de.cyne.lobbyswitcher.listener;
 
 import de.cyne.lobbyswitcher.LobbySwitcher;
-import de.cyne.lobbyswitcher.ping.ServerInfo;
+import gg.ninjagaming.lobbyswitcher.ping.ServerInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
