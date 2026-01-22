@@ -49,7 +49,7 @@ class LobbySwitcherCommand : CommandExecutor {
                     sender.sendMessage(this.prefix + "§cReloading§8..")
 
                     try {
-                        LobbySwitcher.cfg.load(LobbySwitcher.file)
+                        LobbySwitcher.cfg.load(LobbySwitcher.configFile)
 
                         LobbySwitcher.servers.clear()
                         for (server in LobbySwitcher.cfg.getConfigurationSection("servers")!!.getKeys(false)) {
@@ -110,8 +110,8 @@ class LobbySwitcherCommand : CommandExecutor {
             LobbySwitcher.cfg.set("servers.$bungeeServerName.slot", slot)
 
             try {
-                LobbySwitcher.cfg.save(LobbySwitcher.file)
-                LobbySwitcher.cfg.load(LobbySwitcher.file)
+                LobbySwitcher.cfg.save(LobbySwitcher.configFile)
+                LobbySwitcher.cfg.load(LobbySwitcher.configFile)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: InvalidConfigurationException) {

@@ -27,7 +27,8 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
 
         saveDefaultConfig()
         try {
-            cfg.load(file)
+
+            cfg.load(configFile)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: InvalidConfigurationException) {
@@ -77,8 +78,8 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
     }
 
     companion object {
-        var file: File = File("plugins/LobbySwitcher", "config.yml")
-        var cfg: FileConfiguration = YamlConfiguration.loadConfiguration(file)
+        var configFile: File = File("plugins/LobbySwitcher", "config.yml")
+        var cfg: FileConfiguration = YamlConfiguration.loadConfiguration(configFile)
 
         var servers: HashMap<String?, ServerInfo> = HashMap()
         var currentServer: String? = null

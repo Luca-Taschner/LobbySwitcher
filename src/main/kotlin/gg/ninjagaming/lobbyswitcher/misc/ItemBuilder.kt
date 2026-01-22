@@ -34,7 +34,7 @@ class ItemBuilder @JvmOverloads constructor(material: Material, amount: Int = 1)
     }
 
     fun addGlowEffect(): ItemBuilder {
-        this.meta?.addEnchant(Enchantment.DURABILITY, 1, true)
+        this.meta?.addEnchant(Enchantment.UNBREAKING, 1, true)
         this.meta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         return this.build()
     }
