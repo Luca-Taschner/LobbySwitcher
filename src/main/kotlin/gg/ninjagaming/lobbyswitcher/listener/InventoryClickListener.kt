@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.serverProvider
 
 class InventoryClickListener : Listener {
     @EventHandler
@@ -22,7 +23,8 @@ class InventoryClickListener : Listener {
         if (e.currentItem!!.type != Material.getMaterial(LobbySwitcher.cfg.getString("layouts.online.material")!!))
             return
 
-        for (servers in LobbySwitcher.servers.values) {
+        val serverInfoMap = serverProvider.getServers()
+        for (servers in serverInfoMap.values) {
             if (e.slot != servers.slot)
                 continue
 

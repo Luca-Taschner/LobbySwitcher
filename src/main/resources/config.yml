@@ -11,6 +11,9 @@ messages:
   server_offline: '&cThis lobby is currently offline.'
   server_already_connected: '&cYou are already connected to this lobby.'
 
+# Available providers: 'file'
+server-provider: 'file'
+
 inventory:
   rows: 3
   title: '&8● &fLobbys'

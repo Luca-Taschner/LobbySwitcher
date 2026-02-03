@@ -3,7 +3,7 @@ package gg.ninjagaming.lobbyswitcher.runnables
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.cfg
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.currentServer
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.reloading
-import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.servers
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.serverProvider
 import gg.ninjagaming.lobbyswitcher.misc.ServerItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -13,6 +13,8 @@ object ServerRefreshRunnable {
         return Runnable {
             if (reloading)
                 return@Runnable
+
+            val servers = serverProvider.getServers()
             for (servers in servers.values) {
                 val ping = servers.serverPing ?: continue
 

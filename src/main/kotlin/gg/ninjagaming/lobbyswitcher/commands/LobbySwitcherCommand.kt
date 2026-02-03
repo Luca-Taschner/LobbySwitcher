@@ -2,6 +2,7 @@ package gg.ninjagaming.lobbyswitcher.commands
 
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import gg.ninjagaming.lobbyswitcher.misc.GuiHelper
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.serverProvider
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -51,14 +52,14 @@ class LobbySwitcherCommand : CommandExecutor {
                     try {
                         LobbySwitcher.cfg.load(LobbySwitcher.configFile)
 
-                        LobbySwitcher.servers.clear()
+                        serverProvider.clearServers()
                         for (server in LobbySwitcher.cfg.getConfigurationSection("servers")!!.getKeys(false)) {
                             val host = LobbySwitcher.cfg.getString("servers.$server.host")
                             val port = LobbySwitcher.cfg.getInt("servers.$server.port")
                             val displayName = LobbySwitcher.cfg.getString("servers.$server.displayname")
                             val slot = LobbySwitcher.cfg.getInt("servers.$server.slot")
 
-                            LobbySwitcher.servers[server] = ServerInfo(server, host!!, port, displayName, slot)
+                            serverProvider.addServer(ServerInfo(server, host!!, port, displayName, slot))
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()

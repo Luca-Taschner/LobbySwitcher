@@ -6,7 +6,7 @@
 
     <groupId>gg.ninjagaming</groupId>
     <artifactId>lobbyswitcher</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <properties>
         <kotlin.version>2.3.0</kotlin.version>

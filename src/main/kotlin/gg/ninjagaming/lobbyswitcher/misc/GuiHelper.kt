@@ -3,7 +3,7 @@ package gg.ninjagaming.lobbyswitcher.misc
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.cfg
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.currentServer
-import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.servers
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.serverProvider
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
@@ -21,7 +21,8 @@ object GuiHelper {
 
         if (currentServer == null) LobbySwitcher.getServer(player)
 
-        for (servers in servers.values) {
+        val serverInfoMap = serverProvider.getServers()
+        for (servers in serverInfoMap.values) {
             if (!servers.isOnline) {
                 //Offline Server
                 val offlineItem = ServerItemBuilder.buildOfflineServerItem(servers)

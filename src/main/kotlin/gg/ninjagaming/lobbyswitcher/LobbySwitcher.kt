@@ -7,7 +7,8 @@ import gg.ninjagaming.lobbyswitcher.listener.InventoryClickListener
 import gg.ninjagaming.lobbyswitcher.listener.PlayerInteractListener
 import gg.ninjagaming.lobbyswitcher.listener.PlayerJoinListener
 import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper.pluginMessageReceived
-import gg.ninjagaming.lobbyswitcher.ping.ServerInfo
+import gg.ninjagaming.lobbyswitcher.misc.serverProviders.FileServerProvider
+import gg.ninjagaming.lobbyswitcher.misc.serverProviders.IServerProvider
 import gg.ninjagaming.lobbyswitcher.runnables.ServerRefreshRunnable
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -47,13 +48,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
         Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this)
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord")
 
-        for (server in cfg.getConfigurationSection("servers")!!.getKeys(false)) {
-            val host: String? = cfg.getString("servers.$server.host")
-            val port: Int = cfg.getInt("servers.$server.port")
-            val displayName: String? = cfg.getString("servers.$server.displayname")
-            val slot: Int = cfg.getInt("servers.$server.slot")
-            servers[server] = ServerInfo(server, host!!, port, displayName, slot)
-        }
+        setServerProvider()
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(instance!!, ServerRefreshRunnable.getRunnable(), 20, 20)
 
@@ -67,6 +62,20 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
 
     private fun registerCommands() {
         this.getCommand("lobbyswitcher")?.setExecutor(LobbySwitcherCommand())
+    }
+
+    private fun setServerProvider(){
+        val providerString = cfg.getString("server-provider")
+
+        serverProvider = when(providerString){
+            "file" -> FileServerProvider
+            else -> {
+                logger.severe("Invalid server provider '$providerString' specified in config.yml, falling back to file provider.")
+                FileServerProvider
+            }
+        }
+
+        serverProvider.initialize()
     }
 
     private fun registerListener() {
@@ -83,7 +92,7 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
         var configFile: File = File("plugins/LobbySwitcher", "config.yml")
         var cfg: FileConfiguration = YamlConfiguration.loadConfiguration(configFile)
 
-        var servers: HashMap<String?, ServerInfo> = HashMap()
+        lateinit var serverProvider: IServerProvider
         var currentServer: String? = null
 
         var updateAvailable: Boolean = false
