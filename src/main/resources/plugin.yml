@@ -1,5 +1,5 @@
 name: LobbySwitcher
-version: 1.2.0
+version: ${project.version}
 author: cyne
 main: gg.ninjagaming.lobbyswitcher.LobbySwitcher
 api-version: 1.21
