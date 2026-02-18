@@ -120,20 +120,6 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
             return ChatColor.translateAlternateColorCodes('&', cfg.getString(path)!!)
         }
 
-        fun getServer(player: Player) {
-            val out = ByteStreams.newDataOutput()
-            out.writeUTF("GetServer")
-
-            player.sendPluginMessage(LobbySwitcher(), "BungeeCord", out.toByteArray())
-        }
-
-        fun sendToServer(player: Player, serverName: String) {
-            val out = ByteStreams.newDataOutput()
-            out.writeUTF("Connect")
-            out.writeUTF(serverName)
-            player.sendPluginMessage(LobbySwitcher(), "BungeeCord", out.toByteArray())
-        }
-
         fun getLogger(): Logger {
             return Logger.getLogger("LobbySwitcher")
         }
