@@ -8,14 +8,16 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
 class ItemBuilder @JvmOverloads constructor(material: Material, amount: Int = 1) :
-    ItemStack() {
+    ItemStack(material) {
     private val meta: ItemMeta?
 
     init {
-        this.type = material
         this.amount = amount
         this.meta = this.itemMeta
     }
+
+    constructor(itemStack: ItemStack) : this(
+        itemStack.type, itemStack.amount)
 
     fun setDisplayName(displayName: String?): ItemBuilder {
         this.meta?.setDisplayName(displayName)
