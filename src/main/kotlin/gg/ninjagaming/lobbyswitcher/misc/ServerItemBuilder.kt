@@ -33,8 +33,7 @@ object ServerItemBuilder {
         val material = Material.getMaterial(materialString) ?: return invalidEntryItemBuilder
 
         val online: ItemBuilder = ItemBuilder(
-            material,
-            cfg.getInt("layouts.online.subid").toByte().toInt()
+            material
         )
             .setDisplayName(displayName).setLore(lore)
         if (cfg.getBoolean("layouts.online.glow")) online.addGlowEffect()
@@ -51,8 +50,7 @@ object ServerItemBuilder {
         val material = Material.getMaterial(materialString) ?: return invalidEntryItemBuilder
 
         val offline: ItemBuilder = ItemBuilder(
-            material,
-            cfg.getInt("layouts.offline.subid").toByte().toInt()
+            material
         )
             .setDisplayName(displayName)
             .setLore(cfg.getStringList("layouts.offline.lore"))
@@ -81,8 +79,7 @@ object ServerItemBuilder {
         val material = Material.getMaterial(materialString) ?: return ItemBuilder(Material.BARRIER)
 
         val current: ItemBuilder = ItemBuilder(
-            material,
-            cfg.getInt("layouts.current.subid").toByte().toInt()
+            material
         )
             .setDisplayName(displayName).setLore(lore)
         if (cfg.getBoolean("layouts.current.glow")) current.addGlowEffect()
