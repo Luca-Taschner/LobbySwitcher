@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.serverProvider
+import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper
 
 class InventoryClickListener : Listener {
     @EventHandler
@@ -49,7 +50,7 @@ class InventoryClickListener : Listener {
                 LobbySwitcher.getString("messages.prefix") + LobbySwitcher.getString("messages.server_connect")
                     .replace("%server%", servers.displayName!!))
 
-            LobbySwitcher.sendToServer(p, servers.serverName)
+            PluginMessageHelper.sendPlayerToServer(p, servers.serverName)
 
 
         }

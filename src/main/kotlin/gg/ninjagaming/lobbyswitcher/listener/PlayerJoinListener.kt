@@ -2,6 +2,7 @@ package gg.ninjagaming.lobbyswitcher.listener
 
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import gg.ninjagaming.lobbyswitcher.misc.ItemBuilder
+import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
@@ -35,7 +36,7 @@ class PlayerJoinListener : Listener {
 
         p.inventory.setItem(LobbySwitcher.cfg.getInt("hotbarItem.slot"), item)
 
-        if (LobbySwitcher.currentServer == null) LobbySwitcher.getServer(p)
+        if (LobbySwitcher.currentServer == null) PluginMessageHelper.getServer(p)
 
         if (LobbySwitcher.updateAvailable && p.hasPermission("lobbyswitcher.admin")) {
             val message = TextComponent("§8┃ §bLobbySwitcher §8┃ §7Download now §8▶ ")
