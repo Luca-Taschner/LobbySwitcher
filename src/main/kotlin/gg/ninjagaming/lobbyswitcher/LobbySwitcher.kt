@@ -1,12 +1,12 @@
 package gg.ninjagaming.lobbyswitcher
 
-import com.google.common.io.ByteStreams
 import gg.ninjagaming.advancedlobby.misc.Updater
 import gg.ninjagaming.lobbyswitcher.commands.LobbySwitcherCommand
 import gg.ninjagaming.lobbyswitcher.listener.InventoryClickListener
 import gg.ninjagaming.lobbyswitcher.listener.PlayerInteractListener
 import gg.ninjagaming.lobbyswitcher.listener.PlayerJoinListener
 import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper.pluginMessageReceived
+import gg.ninjagaming.lobbyswitcher.misc.serverProviders.CloudNetServiceProvider
 import gg.ninjagaming.lobbyswitcher.misc.serverProviders.FileServerProvider
 import gg.ninjagaming.lobbyswitcher.misc.serverProviders.IServerProvider
 import gg.ninjagaming.lobbyswitcher.runnables.ServerRefreshRunnable
@@ -65,10 +65,11 @@ class LobbySwitcher : JavaPlugin(), PluginMessageListener {
     }
 
     private fun setServerProvider(){
-        val providerString = cfg.getString("server-provider")
+        val providerString = cfg.getString("server-provider.type")
 
         serverProvider = when(providerString){
             "file" -> FileServerProvider
+            "cloudnet" -> CloudNetServiceProvider
             else -> {
                 logger.severe("Invalid server provider '$providerString' specified in config.yml, falling back to file provider.")
                 FileServerProvider
