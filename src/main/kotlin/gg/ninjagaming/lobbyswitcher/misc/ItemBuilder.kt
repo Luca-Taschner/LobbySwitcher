@@ -16,18 +16,11 @@ class ItemBuilder @JvmOverloads constructor(material: Material, amount: Int = 1)
         this.meta = this.itemMeta
     }
 
-    constructor(itemStack: ItemStack) : this(
-        itemStack.type, itemStack.amount)
-
     fun setDisplayName(displayName: String?): ItemBuilder {
         this.meta?.setDisplayName(displayName)
         return this.build()
     }
 
-    fun setLore(vararg lore: String?): ItemBuilder {
-        this.meta?.lore = listOf(*lore)
-        return this.build()
-    }
 
     fun setLore(lore: MutableList<String>): ItemBuilder {
         for (i in lore.indices) lore[i] = ChatColor.translateAlternateColorCodes('&', lore[i])
