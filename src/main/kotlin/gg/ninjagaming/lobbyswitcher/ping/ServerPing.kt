@@ -1,170 +1,150 @@
 package gg.ninjagaming.lobbyswitcher.ping
 
-import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.google.gson.JsonParseException
-import java.io.*
+import com.google.gson.JsonParser
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.logging.Level
 import java.util.logging.Logger
 
 class ServerPing {
     private var host: InetSocketAddress? = null
     private val timeout = 2000
+
     fun setAddress(host: InetSocketAddress) {
         this.host = host
     }
 
-    @Suppress("unused")
     fun fetchData(): DefaultResponse {
-        var socket: Socket? = null
-        var outputStream: OutputStream? = null
-        var dataOut: DataOutputStream? = null
-        var inputStream: InputStream? = null
-        var dataIn: DataInputStream? = null
+        val address = host ?: return DefaultResponse()
 
-        try {
-            socket = Socket()
+        return try {
+            pingStatus(address, timeout)
+        } catch (_: Throwable) {
+            DefaultResponse()
+        }
+    }
 
-            socket.soTimeout = timeout
-            socket.connect(host, timeout)
+    private fun pingStatus(address: InetSocketAddress, timeoutMs: Int): DefaultResponse {
+        Socket().use { socket ->
+            socket.soTimeout = timeoutMs
+            socket.tcpNoDelay = true
+            socket.connect(address, timeoutMs)
 
-            outputStream = socket.getOutputStream()
-            dataOut = DataOutputStream(outputStream)
+            DataOutputStream(socket.getOutputStream()).use { out ->
+                DataInputStream(socket.getInputStream()).use { input ->
 
-            inputStream = socket.getInputStream()
-            dataIn = DataInputStream(inputStream)
+                    // 1) Handshake (state = STATUS)
+                    val handshake = ByteArrayOutput().apply {
+                        writeVarInt(0x00)
+                        writeVarInt(0)
+                        writeString(address.hostString)
+                        writeUnsignedShort(address.port)
+                        writeVarInt(1)
+                    }.toByteArray()
 
-            // HANDSHAKE >
-            val bOut = ByteArrayOutputStream()
-            val handshake = DataOutputStream(bOut)
-            bOut.write(0x00) // packet id
-            writeVarInt(handshake, 4) // protocol version
-            writeVarInt(handshake, host!!.hostString.length)
-            handshake.writeBytes(host!!.hostString)
-            handshake.writeShort(host!!.port)
-            writeVarInt(handshake, 1) // target state 1
+                    writeFramedPacket(out, handshake)
 
-            writeVarInt(dataOut, bOut.toByteArray().size)
-            dataOut.write(bOut.toByteArray())
+                    // 2) Status Request
+                    val statusRequest = ByteArrayOutput().apply {
+                        writeVarInt(0x00) // packet id
+                    }.toByteArray()
 
-            // < HANDSHAKE
-            writeVarInt(dataOut, byteArrayOf(0x00).size)
-            dataOut.write(byteArrayOf(0x00))
+                    writeFramedPacket(out, statusRequest)
 
-            // >
-            val size = readVarInt(dataIn)
-            val packetId = readVarInt(dataIn)
+                    // 3) Read Status Response
+                    val packetLength = readVarInt(input)
+                    if (packetLength <= 0) return DefaultResponse()
 
-            if (packetId != 0x00) {
-                throw IOException("Invalid packetId")
-            }
+                    val packetId = readVarInt(input)
+                    if (packetId != 0x00) return DefaultResponse()
 
-            val stringLength = readVarInt(dataIn)
+                    val jsonString = readString(input)
 
-            if (stringLength < 1) {
-                throw IOException("Invalid string length.")
-            }
-
-            val responseData = ByteArray(stringLength)
-            dataIn.readFully(responseData)
-            val jsonString = String(responseData, Charset.forName("utf-8"))
-
-            val parser = JsonParser()
-            val jsonObject: JsonObject = try {
-                val element = parser.parse(jsonString)
-                if (!element.isJsonObject) {
-                    Logger.getLogger(ServerPing::class.java.getName())
-                        .log(Level.SEVERE, "JSON response is not an object: {0}", element.toString())
-                    return DefaultResponse()
+                    return parseAndPopulate(jsonString)
                 }
-                element.asJsonObject
-            } catch (ex: JsonParseException) {
-                Logger.getLogger(ServerPing::class.java.getName()).log(Level.SEVERE, "Invalid JSON response", ex)
-                return DefaultResponse()
-            }
-
-            val versionElement = jsonObject.get("version") ?: return DefaultResponse()
-            if (!versionElement.isJsonObject) return DefaultResponse()
-            val jsonVersion = versionElement.asJsonObject
-
-            val nameElement = jsonVersion.get("name") ?: return DefaultResponse()
-            val version = try {
-                nameElement.asString
-            } catch (_: Exception) {
-                return DefaultResponse()
-            }
-
-            val response: DefaultResponse = DefaultResponse()
-
-            populateResponseData(version, response, jsonString)
-
-            return response
-        } finally {
-            runCatching { dataIn?.close() }
-            runCatching { inputStream?.close() }
-            runCatching { dataOut?.close() }
-            runCatching { outputStream?.close() }
-            runCatching { socket?.close() }
-        }
-    }
-
-    fun populateResponseData(version: String, response: DefaultResponse, jsonString: String) {
-        when {
-            version.contains("1.9") -> {
-                val responseData: StatusResponseV1x9 =
-                    gson.fromJson<StatusResponseV1x9>(jsonString, StatusResponseV1x9::class.java)
-                response.description = responseData.description!!.text.toString()
-                response.favicon = responseData.favicon
-                response.players = responseData.players!!.online
-                response.maxPlayers = responseData.players.max
-                response.time = responseData.time
-                response.protocol = responseData.version!!.protocol
-                response.version = responseData.version.name
-            }
-
-            version.contains("1.10")
-                    or version.contains("1.11")
-                    or version.contains("1.12") -> {
-                val responseData: StatusResponseV1x10 =
-                    gson.fromJson<StatusResponseV1x10>(jsonString, StatusResponseV1x10::class.java)
-                response.description = responseData.description!!.text.toString()
-                response.players = responseData.players!!.online
-                response.maxPlayers = responseData.players.max
-                response.time = responseData.time
-                response.protocol = responseData.version!!.protocol
-                response.version = responseData.version.name
-            }
-
-            version.contains("1.13")
-                    or version.contains("1.14")
-                    or version.contains("1.15") -> {
-                val responseData: StatusResponseV1x13 =
-                    gson.fromJson<StatusResponseV1x13>(jsonString, StatusResponseV1x13::class.java)
-                response.description = responseData.description!!.text.toString()
-                response.players = responseData.players!!.online
-                response.maxPlayers = responseData.players.max
-                response.time = -1
-                response.protocol = responseData.version!!.protocol
-                response.version = responseData.version.name
-            }
-
-            else -> {
-                val statusResponse: StatusResponse =
-                    gson.fromJson<StatusResponse>(jsonString, StatusResponse::class.java)
-                response.description = statusResponse.description.toString()
-                response.favicon = statusResponse.favicon
-                response.players = statusResponse.players!!.online
-                response.maxPlayers = statusResponse.players!!.max
-                response.time = statusResponse.time
-                response.protocol = statusResponse.version!!.protocol
-                response.version = statusResponse.version!!.name
             }
         }
     }
+
+    private fun writeFramedPacket(out: DataOutputStream, payload: ByteArray) {
+        val frame = ByteArrayOutput().apply {
+            writeVarInt(payload.size)
+            writeBytes(payload)
+        }.toByteArray()
+
+        out.write(frame)
+        out.flush()
+    }
+
+    private fun parseAndPopulate(jsonString: String): DefaultResponse {
+        val jsonObject: JsonObject = try {
+            val element = JsonParser.parseString(jsonString)
+            if (!element.isJsonObject) {
+                Logger.getLogger(ServerPing::class.java.name)
+                    .log(Level.SEVERE, "JSON response is not an object: {0}", element.toString())
+                return DefaultResponse()
+            }
+            element.asJsonObject
+        } catch (ex: JsonParseException) {
+            Logger.getLogger(ServerPing::class.java.name).log(Level.SEVERE, "Invalid JSON response", ex)
+            return DefaultResponse()
+        }
+
+        return DefaultResponse().also { response ->
+            populateResponseData(response, jsonObject)
+        }
+    }
+
+    private fun populateResponseData(response: DefaultResponse, root: JsonObject) {
+        response.description = root.get("description")
+            ?.let { parseDescription(it) }
+            .orEmpty()
+
+        response.favicon = root.get("favicon")?.takeIf { it.isJsonPrimitive }?.asString
+
+        val playersObj = root.getAsJsonObject("players")
+        response.players = playersObj?.get("online")?.asIntOrNull() ?: 0
+        response.maxPlayers = playersObj?.get("max")?.asIntOrNull() ?: 0
+
+        val versionObj = root.getAsJsonObject("version")
+        response.version = versionObj?.get("name")?.takeIf { it.isJsonPrimitive }?.asString
+        response.protocol = versionObj?.get("protocol")?.asStringOrNumberToString()
+
+        response.time = root.get("time")?.asIntOrNull() ?: -1
+    }
+
+    private fun parseDescription(element: JsonElement): String? {
+        return when {
+            element.isJsonPrimitive -> element.asString
+            element.isJsonObject -> {
+                val obj = element.asJsonObject
+                obj.get("text")?.takeIf { it.isJsonPrimitive }?.asString
+                    ?: obj.toString()
+            }
+            else -> null
+        }
+    }
+
+    private fun JsonElement.asIntOrNull(): Int? =
+        runCatching { if (isJsonPrimitive) asInt else null }.getOrNull()
+
+    private fun JsonElement.asStringOrNumberToString(): String? =
+        runCatching {
+            if (!isJsonPrimitive) return@runCatching null
+            val p = asJsonPrimitive
+            when {
+                p.isString -> p.asString
+                p.isNumber -> p.asNumber.toString()
+                else -> null
+            }
+        }.getOrNull()
 
     class DefaultResponse {
         var description: String = ""
@@ -175,100 +155,6 @@ class ServerPing {
         var maxPlayers: Int = 0
         var time: Int = 0
     }
-
-    class StatusResponse {
-        var description: String? = null
-        var players: Players? = null
-        var version: Version? = null
-        var favicon: String? = null
-        var time: Int = 0
-
-        class Players {
-            var max: Int = 0
-            var online: Int = 0
-            var sample: MutableList<Player?>? = null
-        }
-
-        class Player {
-            var name: String? = null
-            var id: String? = null
-        }
-
-        class Version {
-            var name: String? = null
-            var protocol: String? = null
-        }
-    }
-
-    class StatusResponseV1x9 {
-        val players: Players? = null
-        val version: Version? = null
-        val favicon: String? = null
-        val description: Description? = null
-        var time: Int = 0
-
-        class Description {
-            val text: String? = null
-        }
-
-        inner class Players {
-            val max: Int = 0
-            val online: Int = 0
-            val sample: MutableList<Player?>? = null
-        }
-
-        class Player {
-            val name: String? = null
-            val id: String? = null
-        }
-
-        class Version {
-            val name: String? = null
-            val protocol: String? = null
-        }
-    }
-
-    class StatusResponseV1x10 {
-        val players: Players? = null
-        val version: Version? = null
-        val description: Description? = null
-        var time: Int = 0
-
-        class Description {
-            val text: String? = null
-        }
-
-        class Players {
-            val max: Int = 0
-            val online: Int = 0
-        }
-
-        class Version {
-            val name: String? = null
-            val protocol: String? = null
-        }
-    }
-
-    class StatusResponseV1x13 {
-        val description: Description? = null
-        val players: Players? = null
-        val version: Version? = null
-
-        class Description {
-            val text: String? = null
-        }
-
-        class Players {
-            val max: Int = 0
-            val online: Int = 0
-        }
-
-        class Version {
-            val name: String? = null
-            val protocol: String? = null
-        }
-    }
-
 
     @Throws(IOException::class)
     fun readVarInt(`in`: DataInputStream): Int {
@@ -283,21 +169,44 @@ class ServerPing {
         return i
     }
 
-    @Throws(IOException::class)
-    fun writeVarInt(out: DataOutputStream, paramInt: Int) {
-        var paramInt = paramInt
-        while (true) {
-            if ((paramInt and -0x80) == 0) {
-                out.write(paramInt)
-                return
-            }
-
-            out.write(paramInt and 0x7F or 0x80)
-            paramInt = paramInt ushr 7
-        }
+    private fun readString(input: DataInputStream): String {
+        val len = readVarInt(input)
+        if (len !in 0..32767) throw IOException("Invalid string length: $len")
+        val bytes = ByteArray(len)
+        input.readFully(bytes)
+        return String(bytes, StandardCharsets.UTF_8)
     }
 
-    companion object {
-        private val gson = Gson()
+    private class ByteArrayOutput {
+        private val byteStream = java.io.ByteArrayOutputStream()
+        private val out = DataOutputStream(byteStream)
+
+        fun writeVarInt(value: Int) {
+            var v = value
+            while (true) {
+                if ((v and -0x80) == 0) {
+                    out.writeByte(v)
+                    return
+                }
+                out.writeByte(v and 0x7F or 0x80)
+                v = v ushr 7
+            }
+        }
+
+        fun writeString(s: String) {
+            val bytes = s.toByteArray(StandardCharsets.UTF_8)
+            writeVarInt(bytes.size)
+            out.write(bytes)
+        }
+
+        fun writeUnsignedShort(port: Int) {
+            out.writeShort(port and 0xFFFF)
+        }
+
+        fun writeBytes(bytes: ByteArray) {
+            out.write(bytes)
+        }
+
+        fun toByteArray(): ByteArray = byteStream.toByteArray()
     }
 }
