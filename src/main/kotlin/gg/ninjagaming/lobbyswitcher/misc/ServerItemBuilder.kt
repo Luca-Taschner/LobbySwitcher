@@ -23,7 +23,7 @@ object ServerItemBuilder {
                     '&',
                     string.replace("%players%", servers.playerCount.toString())
                         .replace("%max_players%", servers.maxPlayers.toString())
-                        .replace("%motd%", servers.MOTD)
+                        .replace("%motd%", servers.motd)
                 )
             )
         }
@@ -70,7 +70,7 @@ object ServerItemBuilder {
                     '&',
                     string.replace("%players%", servers.playerCount.toString())
                         .replace("%max_players%", servers.maxPlayers.toString())
-                        .replace("%motd%", servers.MOTD)
+                        .replace("%motd%", servers.motd)
                 )
             )
         }
