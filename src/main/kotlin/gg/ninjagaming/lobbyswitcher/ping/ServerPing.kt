@@ -4,6 +4,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
+import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -15,7 +16,6 @@ import java.util.logging.Logger
 
 class ServerPing {
     private var host: InetSocketAddress? = null
-    private val timeout = 2000
 
     fun setAddress(host: InetSocketAddress) {
         this.host = host
@@ -23,6 +23,8 @@ class ServerPing {
 
     fun fetchData(): DefaultResponse {
         val address = host ?: return DefaultResponse()
+
+        val timeout = LobbySwitcher.cfg.getInt("server-ping-timeout")
 
         return try {
             pingStatus(address, timeout)

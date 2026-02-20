@@ -16,6 +16,8 @@ server-provider:
   type: file
   task: Lobby
 
+server-ping-timeout: 2000
+
 inventory:
   rows: 3
   title: '&8● &fLobbys'
