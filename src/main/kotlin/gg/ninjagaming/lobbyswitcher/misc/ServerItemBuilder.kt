@@ -14,7 +14,7 @@ object ServerItemBuilder {
         val displayNameString = cfg.getString("layouts.online.displayname") ?: return invalidEntryItemBuilder
 
         val displayName = getString("layouts.online.displayname")
-            .replace("%server%", displayNameString)
+            .replace("%server%", servers.serverName)
 
         val lore = ArrayList<String>()
         for (string in cfg.getStringList("layouts.online.lore")) {
@@ -44,7 +44,7 @@ object ServerItemBuilder {
     fun buildOfflineServerItem(servers: ServerInfo):ItemBuilder {
         val displayNameString = cfg.getString("layouts.offline.displayname") ?: return invalidEntryItemBuilder
 
-        val displayName = getString("layouts.offline.displayname").replace("%server%", displayNameString)
+        val displayName = getString("layouts.offline.displayname").replace("%server%", servers.serverName)
 
         val materialString = cfg.getString("layouts.offline.material") ?: return invalidEntryItemBuilder
         val material = Material.getMaterial(materialString) ?: return invalidEntryItemBuilder
@@ -61,7 +61,7 @@ object ServerItemBuilder {
     fun buildCurrentServerItem(servers: ServerInfo): ItemBuilder {
         val displayNameString = cfg.getString("layouts.current.displayname") ?: return ItemBuilder(Material.BARRIER)
         val displayName = getString("layouts.current.displayname")
-            .replace("%server%", displayNameString)
+            .replace("%server%", servers.serverName)
 
         val lore = ArrayList<String>()
         for (string in cfg.getStringList("layouts.current.lore")) {
