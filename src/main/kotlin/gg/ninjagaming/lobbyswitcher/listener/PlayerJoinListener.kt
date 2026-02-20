@@ -7,6 +7,7 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -29,7 +30,7 @@ class PlayerJoinListener : Listener {
 
         val item = ItemBuilder(
             hotBarItemMaterial,
-            LobbySwitcher.cfg.getInt("hotbarItem.subid").toShort().toInt())
+            1)
             .setDisplayName(
                 ChatColor.translateAlternateColorCodes('&', hotBarItemDisplayName))
             .setLore(LobbySwitcher.cfg.getStringList("hotbarItem.lore"))
@@ -44,7 +45,7 @@ class PlayerJoinListener : Listener {
 
             extra.hoverEvent = HoverEvent(
                 HoverEvent.Action.SHOW_TEXT,
-                ComponentBuilder("§8» §7Redirect to §bhttps://spigotmc.org/").create()
+                Text("§8» §7Redirect to §bhttps://spigotmc.org/")
             )
             extra.clickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, "https://spigotmc.org/resources/65769/")
 

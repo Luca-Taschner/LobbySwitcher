@@ -64,7 +64,7 @@ layouts:
       - ' &8● &7Players online&8: &f%players%'
 
 hotbarItem:
-  material: CLOCK
+  material: "CLOCK"
   displayname: '&bLobbys &8× &7rightclick'
   lore: []
   slot: 8
