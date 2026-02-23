@@ -20,11 +20,11 @@ jobs:
 
     - name: Build with Maven
       run: mvn clean package
-    
+
     - name: Upload JAR to Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: target/*.jar
+        files: target/lobbyswitcher-*.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
