@@ -14,7 +14,7 @@ object ServerItemBuilder {
         val displayNameString = cfg.getString("layouts.online.displayname") ?: return invalidEntryItemBuilder
 
         val displayName = getString("layouts.online.displayname")
-            .replace("%server%", displayNameString)
+            .replace("%server%", servers.serverName)
 
         val lore = ArrayList<String>()
         for (string in cfg.getStringList("layouts.online.lore")) {
@@ -23,7 +23,7 @@ object ServerItemBuilder {
                     '&',
                     string.replace("%players%", servers.playerCount.toString())
                         .replace("%max_players%", servers.maxPlayers.toString())
-                        .replace("%motd%", servers.MOTD)
+                        .replace("%motd%", servers.motd)
                 )
             )
         }
@@ -33,8 +33,7 @@ object ServerItemBuilder {
         val material = Material.getMaterial(materialString) ?: return invalidEntryItemBuilder
 
         val online: ItemBuilder = ItemBuilder(
-            material,
-            cfg.getInt("layouts.online.subid").toByte().toInt()
+            material
         )
             .setDisplayName(displayName).setLore(lore)
         if (cfg.getBoolean("layouts.online.glow")) online.addGlowEffect()
@@ -45,14 +44,13 @@ object ServerItemBuilder {
     fun buildOfflineServerItem(servers: ServerInfo):ItemBuilder {
         val displayNameString = cfg.getString("layouts.offline.displayname") ?: return invalidEntryItemBuilder
 
-        val displayName = getString("layouts.offline.displayname").replace("%server%", displayNameString)
+        val displayName = getString("layouts.offline.displayname").replace("%server%", servers.serverName)
 
         val materialString = cfg.getString("layouts.offline.material") ?: return invalidEntryItemBuilder
         val material = Material.getMaterial(materialString) ?: return invalidEntryItemBuilder
 
         val offline: ItemBuilder = ItemBuilder(
-            material,
-            cfg.getInt("layouts.offline.subid").toByte().toInt()
+            material
         )
             .setDisplayName(displayName)
             .setLore(cfg.getStringList("layouts.offline.lore"))
@@ -63,7 +61,7 @@ object ServerItemBuilder {
     fun buildCurrentServerItem(servers: ServerInfo): ItemBuilder {
         val displayNameString = cfg.getString("layouts.current.displayname") ?: return ItemBuilder(Material.BARRIER)
         val displayName = getString("layouts.current.displayname")
-            .replace("%server%", displayNameString)
+            .replace("%server%", servers.serverName)
 
         val lore = ArrayList<String>()
         for (string in cfg.getStringList("layouts.current.lore")) {
@@ -72,7 +70,7 @@ object ServerItemBuilder {
                     '&',
                     string.replace("%players%", servers.playerCount.toString())
                         .replace("%max_players%", servers.maxPlayers.toString())
-                        .replace("%motd%", servers.MOTD)
+                        .replace("%motd%", servers.motd)
                 )
             )
         }
@@ -81,8 +79,7 @@ object ServerItemBuilder {
         val material = Material.getMaterial(materialString) ?: return ItemBuilder(Material.BARRIER)
 
         val current: ItemBuilder = ItemBuilder(
-            material,
-            cfg.getInt("layouts.current.subid").toByte().toInt()
+            material
         )
             .setDisplayName(displayName).setLore(lore)
         if (cfg.getBoolean("layouts.current.glow")) current.addGlowEffect()

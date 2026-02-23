@@ -8,11 +8,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
 class ItemBuilder @JvmOverloads constructor(material: Material, amount: Int = 1) :
-    ItemStack() {
+    ItemStack(material) {
     private val meta: ItemMeta?
 
     init {
-        this.type = material
         this.amount = amount
         this.meta = this.itemMeta
     }
@@ -22,10 +21,6 @@ class ItemBuilder @JvmOverloads constructor(material: Material, amount: Int = 1)
         return this.build()
     }
 
-    fun setLore(vararg lore: String?): ItemBuilder {
-        this.meta?.lore = listOf(*lore)
-        return this.build()
-    }
 
     fun setLore(lore: MutableList<String>): ItemBuilder {
         for (i in lore.indices) lore[i] = ChatColor.translateAlternateColorCodes('&', lore[i])

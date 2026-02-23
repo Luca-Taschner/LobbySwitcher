@@ -2,10 +2,12 @@ package gg.ninjagaming.lobbyswitcher.listener
 
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import gg.ninjagaming.lobbyswitcher.misc.ItemBuilder
+import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -28,14 +30,14 @@ class PlayerJoinListener : Listener {
 
         val item = ItemBuilder(
             hotBarItemMaterial,
-            LobbySwitcher.cfg.getInt("hotbarItem.subid").toShort().toInt())
+            1)
             .setDisplayName(
                 ChatColor.translateAlternateColorCodes('&', hotBarItemDisplayName))
             .setLore(LobbySwitcher.cfg.getStringList("hotbarItem.lore"))
 
         p.inventory.setItem(LobbySwitcher.cfg.getInt("hotbarItem.slot"), item)
 
-        if (LobbySwitcher.currentServer == null) LobbySwitcher.getServer(p)
+        if (LobbySwitcher.currentServer == null) PluginMessageHelper.getServer(p)
 
         if (LobbySwitcher.updateAvailable && p.hasPermission("lobbyswitcher.admin")) {
             val message = TextComponent("§8┃ §bLobbySwitcher §8┃ §7Download now §8▶ ")
@@ -43,7 +45,7 @@ class PlayerJoinListener : Listener {
 
             extra.hoverEvent = HoverEvent(
                 HoverEvent.Action.SHOW_TEXT,
-                ComponentBuilder("§8» §7Redirect to §bhttps://spigotmc.org/").create()
+                Text("§8» §7Redirect to §bhttps://spigotmc.org/")
             )
             extra.clickEvent = ClickEvent(ClickEvent.Action.OPEN_URL, "https://spigotmc.org/resources/65769/")
 

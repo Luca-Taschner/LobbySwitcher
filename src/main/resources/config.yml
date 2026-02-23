@@ -12,7 +12,11 @@ messages:
   server_already_connected: '&cYou are already connected to this lobby.'
 
 # Available providers: 'file'
-server-provider: 'file'
+server-provider:
+  type: file
+  task: Lobby
+
+server-ping-timeout: 2000
 
 inventory:
   rows: 3
@@ -39,8 +43,7 @@ servers:
 
 layouts:
   online:
-    material: STAINED_CLAY
-    subid: 5
+    material: "LIME_TERRACOTTA"
     glow: false
     displayname: '&b%server%'
     lore:
@@ -49,15 +52,13 @@ layouts:
       - ''
       - ' &8» &7Click to &aconnect &7to this server'
   offline:
-    material: STAINED_CLAY
-    subid: 14
+    material: "RED_TERRACOTTA"
     glow: false
     displayname: '&b%server%'
     lore:
       - ' &8● &7This server is &coffline&8.'
   current:
-    material: STAINED_CLAY
-    subid: 5
+    material: "YELLOW_TERRACOTTA"
     glow: true
     displayname: '&b%server%'
     lore:
@@ -65,8 +66,7 @@ layouts:
       - ' &8● &7Players online&8: &f%players%'
 
 hotbarItem:
-  material: WATCH
-  subid: 0
+  material: "CLOCK"
   displayname: '&bLobbys &8× &7rightclick'
   lore: []
   slot: 8

@@ -21,7 +21,7 @@ object ServerRefreshRunnable {
                 val response = ping.fetchData()
 
                 servers.isOnline = response.version != null
-                servers.MOTD = response.description
+                servers.motd = response.description
                 servers.playerCount = response.players
                 servers.maxPlayers = response.maxPlayers
             }
@@ -42,6 +42,7 @@ object ServerRefreshRunnable {
                     if (servers.serverName == currentServer) {
                         val current = ServerItemBuilder.buildCurrentServerItem(servers)
                         players.openInventory.topInventory.setItem(servers.slot, current)
+                        continue
                     }
 
                     val online = ServerItemBuilder.buildOnlineServerItem(servers)

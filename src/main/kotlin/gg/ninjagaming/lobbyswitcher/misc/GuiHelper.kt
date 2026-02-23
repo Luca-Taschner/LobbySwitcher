@@ -19,7 +19,7 @@ object GuiHelper {
             )
         )
 
-        if (currentServer == null) LobbySwitcher.getServer(player)
+        if (currentServer == null) PluginMessageHelper.getServer(player)
 
         val serverInfoMap = serverProvider.getServers()
         for (servers in serverInfoMap.values) {

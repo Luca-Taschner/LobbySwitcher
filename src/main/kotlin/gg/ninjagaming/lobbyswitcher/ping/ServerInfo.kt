@@ -6,7 +6,7 @@ class ServerInfo(var serverName: String, var host: String, var port: Int, var di
     var serverPing: ServerPing?
 
     var isOnline: Boolean = false
-    var MOTD: String = ""
+    var motd: String = ""
     var playerCount: Int = 0
     var maxPlayers: Int = 0
 

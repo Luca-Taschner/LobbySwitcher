@@ -3,6 +3,7 @@ package gg.ninjagaming.lobbyswitcher.commands
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher
 import gg.ninjagaming.lobbyswitcher.misc.GuiHelper
 import gg.ninjagaming.lobbyswitcher.LobbySwitcher.Companion.serverProvider
+import gg.ninjagaming.lobbyswitcher.misc.PluginMessageHelper
 import gg.ninjagaming.lobbyswitcher.ping.ServerInfo
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -68,7 +69,7 @@ class LobbySwitcherCommand : CommandExecutor {
                     }
 
                     if (sender is Player) {
-                        if (LobbySwitcher.currentServer == null) LobbySwitcher.getServer(sender)
+                        if (LobbySwitcher.currentServer == null) PluginMessageHelper.getServer(sender)
                         //sender.sendMessage("ServerInfo: §e" + LobbySwitcher.currentServer);
                     }
 
