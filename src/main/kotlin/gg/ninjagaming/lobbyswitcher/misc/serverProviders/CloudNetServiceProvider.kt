@@ -1,5 +1,6 @@
 package gg.ninjagaming.lobbyswitcher.misc.serverProviders
 
+import com.google.common.util.concurrent.Striped.lock
 import eu.cloudnetservice.driver.inject.InjectionLayer
 import eu.cloudnetservice.driver.provider.CloudServiceProvider
 import eu.cloudnetservice.driver.provider.ServiceTaskProvider
@@ -13,8 +14,12 @@ object CloudNetServiceProvider: IServerProvider {
     lateinit var taskInfoProvider: ServiceTaskProvider
     lateinit var serviceInfoProvider: CloudServiceProvider
     lateinit var LobbyTask: ServiceTask
+    @Volatile
     private var serverMap: HashMap<String, ServerInfo> = HashMap()
+    @Volatile
     private var lastUpdate: Long = 0
+    private val lock = Any()
+
 
     override fun initialize() {
         taskInfoProvider = InjectionLayer.boot().instance(ServiceTaskProvider::class.java)
@@ -39,24 +44,28 @@ object CloudNetServiceProvider: IServerProvider {
             return
         }
 
-        loadCloudNetServices()
-
+        synchronized(lock) {
+            serverMap = loadCloudNetServices()
+        }
         LobbySwitcher.getLogger().info("Successfully initialized CloudNet server provider.")
     }
 
     override fun getServers(): HashMap<String, ServerInfo> {
-        if(System.currentTimeMillis() - lastUpdate > 10000){
-            loadCloudNetServices()
+        synchronized(lock) {
+            if(System.currentTimeMillis() - lastUpdate > 10000){
+                serverMap = loadCloudNetServices()
+            }
         }
 
-        return serverMap
+
+        return HashMap(serverMap)
     }
 
     override fun addServer(server: ServerInfo) {}
 
     override fun clearServers() {}
 
-    private fun loadCloudNetServices(){
+    private fun loadCloudNetServices(): HashMap<String, ServerInfo>{
         val servers: HashMap<String, ServerInfo> = HashMap()
         var slot = 11;
         val services = serviceInfoProvider.services()
@@ -73,8 +82,8 @@ object CloudNetServiceProvider: IServerProvider {
             slot++
         }
 
-        serverMap = servers
         lastUpdate = System.currentTimeMillis()
+        return servers
 
     }
 }
