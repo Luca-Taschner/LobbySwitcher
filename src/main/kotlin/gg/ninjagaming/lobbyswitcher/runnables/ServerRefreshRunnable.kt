@@ -42,6 +42,7 @@ object ServerRefreshRunnable {
                     if (servers.serverName == currentServer) {
                         val current = ServerItemBuilder.buildCurrentServerItem(servers)
                         players.openInventory.topInventory.setItem(servers.slot, current)
+                        continue
                     }
 
                     val online = ServerItemBuilder.buildOnlineServerItem(servers)
