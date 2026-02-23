@@ -13,6 +13,8 @@ object CloudNetServiceProvider: IServerProvider {
     lateinit var taskInfoProvider: ServiceTaskProvider
     lateinit var serviceInfoProvider: CloudServiceProvider
     lateinit var LobbyTask: ServiceTask
+    private var serverMap: HashMap<String, ServerInfo> = HashMap()
+    private var lastUpdate: Long = 0
 
     override fun initialize() {
         taskInfoProvider = InjectionLayer.boot().instance(ServiceTaskProvider::class.java)
@@ -37,13 +39,26 @@ object CloudNetServiceProvider: IServerProvider {
             return
         }
 
+        loadCloudNetServices()
+
         LobbySwitcher.getLogger().info("Successfully initialized CloudNet server provider.")
     }
 
     override fun getServers(): HashMap<String, ServerInfo> {
+        if(System.currentTimeMillis() - lastUpdate > 10000){
+            loadCloudNetServices()
+        }
 
+        return serverMap
+    }
+
+    override fun addServer(server: ServerInfo) {}
+
+    override fun clearServers() {}
+
+    private fun loadCloudNetServices(){
         val servers: HashMap<String, ServerInfo> = HashMap()
-        var slot = 1;
+        var slot = 11;
         val services = serviceInfoProvider.services()
         services.forEach { service ->
             if (service.serviceId().taskName() != LobbyTask.name())
@@ -58,10 +73,8 @@ object CloudNetServiceProvider: IServerProvider {
             slot++
         }
 
-        return servers
+        serverMap = servers
+        lastUpdate = System.currentTimeMillis()
+
     }
-
-    override fun addServer(server: ServerInfo) {}
-
-    override fun clearServers() {}
 }
