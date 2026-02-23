@@ -67,9 +67,13 @@ object CloudNetServiceProvider: IServerProvider {
 
     private fun loadCloudNetServices(): HashMap<String, ServerInfo>{
         val servers: HashMap<String, ServerInfo> = HashMap()
-        var slot = 11;
-        val services = serviceInfoProvider.services()
-        services.forEach { service ->
+        var slot = 11
+
+        serviceInfoProvider.services()
+            .asSequence()
+            .filter { it.serviceId().taskName() == LobbyTask.name() }
+            .sortedBy { it.serviceId().name() }
+            .forEach { service ->
             if (service.serviceId().taskName() != LobbyTask.name())
                 return@forEach
 
@@ -78,7 +82,8 @@ object CloudNetServiceProvider: IServerProvider {
                 service.address().host,
                 service.address().port,
                 service.serviceId().name(),
-                slot)
+                slot
+            )
             slot++
         }
 
